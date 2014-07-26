@@ -23,7 +23,6 @@ void setup()
     Ethernet.begin(mac, ip);
   }
   Serial.println(Ethernet.localIP());
-  display("Hi", "Joe :)");
 }
 
 void loop() {
