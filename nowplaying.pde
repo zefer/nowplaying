@@ -65,6 +65,7 @@ void requestNowPlaying() {
   lastAttemptTime = millis();
 }
 
+// TODO: consider scrolling output to allow displaying long lines
 void display(String line1, String line2) {
   lcd.clear();
   lcd.setCursor(0,0);
