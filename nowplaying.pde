@@ -68,9 +68,9 @@ void requestNowPlaying() {
 void display(String line1, String line2) {
   lcd.clear();
   lcd.setCursor(0,0);
-  lcd.print(line1);
+  lcd.print(line1.substring(0, 16));
   lcd.setCursor(0,1);
-  lcd.print(line2);
+  lcd.print(line2.substring(0, 16));
   Serial.println(line1);
   Serial.println(line2);
 }
