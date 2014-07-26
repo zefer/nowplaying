@@ -19,7 +19,7 @@ void setup()
 
   display("Connecting...", "");
   if (!Ethernet.begin(mac)) {
-    Serial.println("Failed to get an IP address using DHCP, trying manually");
+    Serial.println("DHCP failed, connecting with static IP.");
     Ethernet.begin(mac, ip);
   }
   Serial.println(Ethernet.localIP());
@@ -55,7 +55,6 @@ void loop() {
 }
 
 void requestNowPlaying() {
-  Serial.println("connecting to server...");
   if (client.connect(serverHost, 80)) {
     Serial.println("making HTTP request...");
     client.println("POST /_player_engine.php HTTP/1.1");
