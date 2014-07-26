@@ -1,8 +1,6 @@
 #include <LiquidCrystal.h>
 #include <SPI.h>
 #include <Ethernet.h>
-/* #include <JsonParser.h> */
-/* using namespace ArduinoJson::Parser; */
 
 LiquidCrystal lcd(9, 8, 5, 4, 3, 2);
 byte mac[] = { 0x90, 0xA2, 0xDA, 0x00, 0x1F, 0x6F };
@@ -10,10 +8,9 @@ IPAddress ip(192,168,1,99);
 EthernetClient client;
 
 char serverHost[] = "music";
-boolean requested;
-String currentLine = "";            // string to hold the text from server
-const unsigned long requestInterval = 10000;  // delay between requests
-unsigned long lastAttemptTime = millis() - requestInterval;
+String currentLine = "";
+const unsigned long requestInterval = 10000;
+unsigned long lastAttemptTime = millis()-requestInterval;
 
 void setup()
 {
@@ -47,7 +44,7 @@ void loop() {
   }
 
   // We have JSON, parse it
-  if ( currentLine.endsWith("}")) {
+  if (currentLine.endsWith("}")) {
     client.stop();
     String chunk;
     chunk = currentLine.substring(currentLine.indexOf("currentartist")+16);
