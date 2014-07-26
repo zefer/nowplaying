@@ -52,6 +52,12 @@ void loop() {
     line1 = extractField("currentartist", 16);
     line2 = extractField("currentsong", 14);
 
+    // When artist & song are empty, it's likely I'm streaming radio.
+    if (line1 == "" && line2 == "") {
+      line1 = extractField("currentalbum", 21);
+      line2 = extractField("bitrate", 10) + " kbit/s";
+    }
+
     display(line1, line2);
   }
 }
