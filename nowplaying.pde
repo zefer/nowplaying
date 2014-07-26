@@ -30,28 +30,31 @@ void setup()
 }
 
 void loop() {
-  if (client.connected()) {
-    if (client.available()) {
-      char inChar = client.read();
-      currentLine += inChar;
-
-      if (inChar == '\n') {
-        currentLine = "";
-      }
-      // We have JSON, parse it
-      if ( currentLine.endsWith("}")) {
-        client.stop();
-        String chunk;
-        chunk = currentLine.substring(currentLine.indexOf("currentartist")+16);
-        String artist = chunk.substring(0, chunk.indexOf('"'));
-        chunk = currentLine.substring(currentLine.indexOf("currentsong")+14);
-        String song = chunk.substring(0, chunk.indexOf('"'));
-        display(artist, song);
-      }
+  if (!client.connected()) {
+    if (millis() - lastAttemptTime > requestInterval) {
+      requestNowPlaying();
     }
+    return;
   }
-  else if (millis() - lastAttemptTime > requestInterval) {
-    requestNowPlaying();
+  if (!client.available()) {
+    return;
+  }
+
+  char inChar = client.read();
+  currentLine += inChar;
+  if (inChar == '\n') {
+    currentLine = "";
+  }
+
+  // We have JSON, parse it
+  if ( currentLine.endsWith("}")) {
+    client.stop();
+    String chunk;
+    chunk = currentLine.substring(currentLine.indexOf("currentartist")+16);
+    String artist = chunk.substring(0, chunk.indexOf('"'));
+    chunk = currentLine.substring(currentLine.indexOf("currentsong")+14);
+    String song = chunk.substring(0, chunk.indexOf('"'));
+    display(artist, song);
   }
 }
 
