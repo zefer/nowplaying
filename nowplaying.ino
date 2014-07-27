@@ -15,7 +15,7 @@ unsigned long lastAttemptTime = millis()-requestInterval;
 const unsigned int maxLen = 16;
 
 // Dim the backlight if the display hasn't changed
-const unsigned long backlightTimeout = 10000;
+const unsigned long backlightTimeout = 25000;
 unsigned long lastDisplayChange = 0;
 String lastDisplay = "";
 
