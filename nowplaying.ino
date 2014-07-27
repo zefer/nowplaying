@@ -104,13 +104,14 @@ void display(String line1, String line2) {
   lcd.setCursor(0,1);
   lcd.print(line2.substring(0, maxLen));
 
-  // Backlight on if display changed, dim it if no change since timeout period
+  // Backlight on if song/display changed.
+  if(line1 + line2 != lastDisplay) {
+    digitalWrite(BACKLIGHT_PIN, HIGH);
+    lastDisplayChange = millis();
+  }
+  // Backlight off if song/display hasn't changed since timeout period.
   if (millis() - lastDisplayChange > backlightTimeout) {
-    if(line1 + line2 != lastDisplay) {
-      digitalWrite(BACKLIGHT_PIN, HIGH);
-    } else {
-      digitalWrite(BACKLIGHT_PIN, LOW);
-    }
+    digitalWrite(BACKLIGHT_PIN, LOW);
   }
   lastDisplay = line1 + line2;
 }
