@@ -1,6 +1,7 @@
 #include <LiquidCrystal.h>
 #include <SPI.h>
 #include <Ethernet.h>
+#define BACKLIGHT_PIN 7
 
 LiquidCrystal lcd(9, 8, 5, 4, 3, 2);
 byte mac[] = { 0x90, 0xA2, 0xDA, 0x00, 0x1F, 0x6F };
@@ -13,10 +14,17 @@ const unsigned long requestInterval = 10000;
 unsigned long lastAttemptTime = millis()-requestInterval;
 const unsigned int maxLen = 16;
 
+// Dim the backlight if the display hasn't changed
+const unsigned long backlightTimeout = 10000;
+unsigned long lastDisplayChange = 0;
+String lastDisplay = "";
+
 void setup()
 {
   Serial.begin(9600);
   lcd.begin(maxLen,2);
+  pinMode(BACKLIGHT_PIN, OUTPUT);
+  digitalWrite(BACKLIGHT_PIN, HIGH);
 
   display("Connecting...", "");
   if (!Ethernet.begin(mac)) {
@@ -95,4 +103,14 @@ void display(String line1, String line2) {
   lcd.print(line1.substring(0, maxLen));
   lcd.setCursor(0,1);
   lcd.print(line2.substring(0, maxLen));
+
+  // Backlight on if display changed, dim it if no change since timeout period
+  if (millis() - lastDisplayChange > backlightTimeout) {
+    if(line1 + line2 != lastDisplay) {
+      digitalWrite(BACKLIGHT_PIN, HIGH);
+    } else {
+      digitalWrite(BACKLIGHT_PIN, LOW);
+    }
+  }
+  lastDisplay = line1 + line2;
 }
