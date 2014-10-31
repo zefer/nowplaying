@@ -51,39 +51,42 @@ void loop() {
   char inChar = client.read();
 
   if (inChar == '\n') {
-    // Received a full line, it's either info, or eom.
-    if (currentLine == "OK") {
-      // End of response.
-      client.stop();
-      if ( artist != "" ) {
-        // Display artist & title.
-        display(artist, title);
-      } else {
-        // Display filename start / filename end.
-        int len = file.length();
-        display(
-          file.substring(0, 15),
-          file.substring((max(0, len-16)), len)
-        );
-      }
-      artist = "";
-      title = "";
-      file = "";
-    }
-
-    // Store the lines we are interested in, we might display these.
-    if (currentLine.startsWith("Artist: ")) {
-      artist = currentLine.substring(8);
-    } else if (currentLine.startsWith("Title: ")) {
-      title = currentLine.substring(7);
-    } else if (currentLine.startsWith("file: ")) {
-      file = currentLine.substring(6);
-    }
-
-    // Reset the line so we can read the next one.
+    // We have a full line, read & act on it.
+    readLine(currentLine);
     currentLine = "";
   } else {
     currentLine += inChar;
+  }
+}
+
+void endOfResponse() {
+  client.stop();
+  if ( artist != "" ) {
+    display(artist, title);
+  } else {
+    // Fallback: display the start & end of the file string.
+    int len = file.length();
+    display(
+      file.substring(0, min(15, len)),
+      file.substring((max(0, len-16)), len)
+    );
+  }
+}
+
+// Reads a line of an MPD response, could be an attribute, or an EOM.
+void readLine(String l) {
+  if (l == "OK") {
+    // EOM. We're probably going to display something.
+    endOfResponse();
+    artist = "";
+    title = "";
+    file = "";
+  } else if (l.startsWith("Artist: ")) {
+    artist = l.substring(8);
+  } else if (l.startsWith("Title: ")) {
+    title = l.substring(7);
+  } else if (l.startsWith("file: ")) {
+    file = l.substring(6);
   }
 }
 
