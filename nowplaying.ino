@@ -108,10 +108,10 @@ void display(String line1, String line2) {
   if(line1 + line2 != lastDisplay) {
     digitalWrite(BACKLIGHT_PIN, HIGH);
     lastDisplayChange = millis();
+    lastDisplay = line1 + line2;
   }
   // Backlight off if song/display hasn't changed since timeout period.
   if (millis() - lastDisplayChange > backlightTimeout) {
     digitalWrite(BACKLIGHT_PIN, LOW);
   }
-  lastDisplay = line1 + line2;
 }
